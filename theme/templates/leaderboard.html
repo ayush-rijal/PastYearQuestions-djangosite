@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Past Questions</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link href="{% static 'css/output.css' %}" rel="stylesheet" />
+    <link
+      rel="shortcut icon"
+      href="{% static 'favicon.ico' %}"
+      type="image/x-icon"
+    />
+  </head>
+  <body class="bg-gray-100">
+    {% include "components/Navbar.html"%}
+
+    <section class="py-8 bg-white">
+      <div class="container mx-auto px-4 py-20">
+        <div
+          class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6"
+        >
+          <div class="mb-4 sm:mb-0 hover:text-white-600 Stext-center">
+            <h1
+              class="text-2xl sm:text-4xl font-bold text-gray-700 text-center"
+            >
+              Leaderboard
+            </h1>
+            <span class="text-xs sm:text-sm text-gray-500 text-center"
+              >View top-performing users</span
+            >
+          </div>
+          <div class="flex items-center justify-between">
+            <button
+              class="flex items-center gap-2 rounded-md bg-blue-600 px-3 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm font-semibold text-white focus:outline-none focus:ring hover:bg-blue-700"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="h-4 w-4"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 4.5v15m0 0l6.75-6.75M12 19.5l-6.75-6.75"
+                />
+              </svg>
+              Export
+            </button>
+          </div>
+        </div>
+
+        <div class="overflow-y-hidden rounded-lg border">
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-max">
+              <thead>
+                <tr
+                  class="bg-blue-600 text-left text-xs font-semibold uppercase tracking-widest text-white"
+                >
+                  <th class="px-3 sm:px-5 py-3">Rank</th>
+                  <th class="px-3 sm:px-5 py-3">Profile</th>
+                  <th class="px-3 sm:px-5 py-3">Username</th>
+                  <th class="px-3 sm:px-5 py-3">Bio</th>
+                  <th class="px-3 sm:px-5 py-3">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="text-gray-500">
+                {% if leaderboard_users %} {% for rank in leaderboard_users %}
+                <tr>
+                  <td
+                    class="items-center border-b border-gray-200 bg-white px-3 sm:px-5 py-5 text-xs sm:text-sm"
+                  >
+                    <p class="whitespace-no-wrap">{{ forloop.counter }}</p>
+                  </td>
+                  <td
+                    class="border-b border-gray-200 bg-white px-2 items-center sm:px-5 py-5 text-xs sm:text-sm"
+                  >
+                    <a href="{% url 'profile' rank.user.username %}"
+                      ><img
+                        src="{{ rank.user.profile.profile_img.url }}"
+                        alt="User Profile"
+                        class="h-8 w-8 sm:h-10 sm:w-10 rounded-full mx-auto"
+                    /></a>
+                  </td>
+                  <td
+                    class="border-b border-gray-200 bg-white px-3 sm:px-5 py-5 text-xs sm:text-sm"
+                  >
+                    <a href="{% url 'profile' rank.user.username %}"
+                      ><p class="whitespace-no-wrap font-semibold">
+                        @{{ rank.user.username }}
+                      </p></a
+                    >
+                  </td>
+                  <td
+                    class="border-b border-gray-200 bg-white px-3 sm:px-5 py-5 text-xs sm:text-sm"
+                  >
+                    <p class="whitespace-no-wrap hover:bg-green-100">
+                      {{ rank.user.profile.bio|truncatewords:5 }}
+                    </p>
+                  </td>
+                  <td
+                    class="border-b border-gray-200 bg-white px-3 sm:px-5 py-5 text-xs sm:text-sm"
+                  >
+                    <a
+                      href="{% url 'profile' rank.user.username %}"
+                      class="bg-gray-800 text-white py-1 px-2 sm:py-2 sm:px-4 rounded hover:text-green-900"
+                      >View Profile</a
+                    >
+                  </td>
+                </tr>
+                {% endfor %} {% else %}
+                <tr>
+                  <td
+                    colspan="5"
+                    class="border-b border-gray-200 bg-white px-5 py-5 text-center text-red-600 font-bold"
+                  >
+                    No User Available on Leaderboard!!
+                  </td>
+                </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+
+          <div
+            class="flex flex-col sm:flex-row items-center border-t bg-white px-5 py-5 sm:justify-between"
+          >
+            <div class="mt-2 inline-flex sm:mt-0 items-center">
+              <button
+                class="mr-2 h-10 sm:h-12 w-10 sm:w-12 rounded-full border text-xs sm:text-sm font-semibold text-gray-600 transition duration-150 hover:bg-gray-100"
+              >
+                <a href="{% url 'home' %}">Prev</a>
+              </button>
+              <button
+                class="h-10 sm:h-12 w-10 sm:w-12 rounded-full border text-xs sm:text-sm font-semibold text-gray-600 transition duration-150 hover:bg-gray-100"
+              >
+                <a href="{% url 'leaderboard' %}">Next</a>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {% include "components/footer.html"%}
+
+    <script>
+      // Toggle Navbar Dropdown
+      document
+        .getElementById("navbar-toggle")
+        .addEventListener("click", function () {
+          const navbarMenu = document.querySelector(".md\\:flex");
+          navbarMenu.classList.toggle("hidden");
+        });
+    </script>
+  </body>
+</html>

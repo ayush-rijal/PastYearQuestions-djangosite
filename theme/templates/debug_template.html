@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Debug Template</title>
+  </head>
+  <body>
+    <h1>Debug Template</h1>
+    <div class="questions my-4">
+      {% for item in question_data %}
+      <div>Question: {{ item.question.text }}</div>
+      <div>Correct Answer: {{ item.correct_answer.text }}</div>
+      <div>
+        User Answer: {% if item.user_answer %} {{ item.user_answer.text }} {%
+        else %} No answer provided {% endif %}
+      </div>
+      <hr />
+      {% endfor %}
+    </div>
+  </body>
+</html>

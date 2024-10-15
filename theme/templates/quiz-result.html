@@ -1,0 +1,183 @@
+{% load static %} {% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{submission.quiz.title}} - Quiz Result</title>
+    <link href="{% static 'css/output.css' %}" rel="stylesheet">
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+  </head>
+
+  <body class="bg-gray-100 font-sans">
+    {% include "components/Navbar.html" %}
+
+    <div class="container mx-auto py-20">
+      {% for message in messages %}
+      <div id="message-div" class="mb-4">
+        <h4 class="text-center text-green-600 text-lg font-semibold">
+          {{ message }}
+        </h4>
+      </div>
+      {% endfor %}
+
+      <div class="bg-white rounded-lg shadow-lg overflow-hidden ">
+        <div class="bg-blue-600 text-white py-4 px-6">
+          <h1 class="text-2xl font-bold">Quiz Result Summary</h1>
+        </div>
+        <div class="p-6">
+          <div class="flex flex-col md:flex-row">
+            <div class="w-full md:w-1/2 pr-0 md:pr-4">
+              <p class="mb-2">
+                <strong>Name:</strong> {{ submission.user.profile.full_name }}
+              </p>
+              <p class="mb-2">
+                <p><strong>Quiz:</strong> {{submission.quiz.title|title}}</p>
+              </p>
+              <p class="mb-2">
+                <strong>Total Questions:</strong>
+                {{submission.quiz.question_set.count}}
+              </p>
+              <p class="mb-2">
+                <strong>Total Correct Answers:</strong> {{ submission.score }}
+              </p>
+              <p class="mb-2">
+                <strong>Total Incorrect Answers:</strong>
+                {{submission.quiz.question_set.count|
+                subtract:submission.score}}
+              </p>
+              <p class="mb-2">
+                <strong>Submitted At:</strong>
+                {{submission.submitted_at|timesince}}'s ago
+              </p>
+            </div>
+            <div class="w-full md:w-1/2 mt-4 md:mt-0">
+              <canvas id="resultChart" class="w-full h-64"></canvas>
+            </div>
+          </div>
+          <div class="mt-6 flex justify-center space-x-4">
+            <a
+              href="{% url 'all_quiz' %}"
+              class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300"
+            >
+              All Quizzes
+            </a>
+            <a
+              href="{% url 'quiz' submission.quiz.id %}"
+              class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition duration-300"
+            >
+              Retake Quiz
+            </a>
+          </div>
+        </div>
+      </div>
+      <h2 class = "text-center mx-auto font-sans font-semibold py-3 mb-3 text:green-900 hover:text-pretty">Check Your Answer Sheet</h2>
+      <div class="mt-8 space-y-6">
+        {% for item in question_data %}
+        <div
+          class="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 transform hover:scale-105"
+          id="question-{{ forloop.counter }}"
+        >
+          <div class="bg-gray-200 py-2 px-4">
+            <h2 class="text-lg font-semibold">
+              Question {{ forloop.counter }}
+            </h2>
+          </div>
+          <div class="p-4">
+            <p class="mb-4 text-gray-800 select-none">{{ item.question.text }}</p>
+            <div class="space-y-2">
+              {% for option in item.question.choice_set.all %}
+              <div class="flex items-center">
+                <input type="radio" disabled {% if item.user_answer == option
+                %}checked class="form-radio h-4 w-4 text-blue-600" />
+                <label
+                  class="ml-2 {% if option == item.correct_answer %}text-green-600 font-semibold{% elif item.user_answer == option and item.user_answer != item.correct_answer %}text-red-600 font-semibold{% endif %}"
+                >
+                  {{ option.text }}
+                </label>
+              </div>
+              {% endfor %}
+            </div>
+            <div class="mt-4">
+              <p class="text-green-600">
+                <strong>Correct Answer:</strong> {{ item.correct_answer.text }}
+              </p>
+              <p
+                class=" hidden {% if item.user_answer == item.correct_answer %}text-green-600{% else %}text-red-600{% endif %}"
+              >
+                <strong class = "hidden">Your Answer:</strong>
+                {% if item.user_answer %} {{ item.user_answer.text }} {% else %}
+                No answer provided {% endif %}
+              </p>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    {% include "components/footer.html" %}
+
+    <script>
+      // Chart
+      const ctx = document.getElementById('resultChart').getContext('2d');
+      new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+              labels: ['Correct', 'Incorrect'],
+              datasets: [{
+                  data: [{{ submission.score }}, {{ submission.quiz.question_set.count|subtract:submission.score }}],
+                  backgroundColor: ['#48bb78', '#f56565'],
+                  borderWidth: 0
+              }]
+          },
+          options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                  legend: {
+                      position: 'bottom'
+                  }
+              },
+              animation: {
+                  animateScale: true,
+                  animateRotate: true
+              }
+          }
+      });
+
+      // Animations
+      gsap.from(".bg-white", {
+          duration: 1,
+          y: 50,
+          opacity: 0,
+          stagger: 0.2,
+          ease: "power3.out"
+      });
+
+      // Highlight correct and incorrect answers on hover
+      const questions = document.querySelectorAll('.question');
+      questions.forEach(question => {
+          question.addEventListener('mouseenter', () => {
+              gsap.to(question, {
+                  duration: 0.3,
+                  boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+                  scale: 1.02
+              });
+          });
+          question.addEventListener('mouseleave', () => {
+              gsap.to(question, {
+                  duration: 0.3,
+                  boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
+                  scale: 1
+              });
+          });
+      });
+    </script>
+  </body>
+</html>

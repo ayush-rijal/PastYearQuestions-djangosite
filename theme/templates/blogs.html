@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recent Blogs - past Year Questions</title>
+    <link
+      rel="shortcut icon"
+      href="{% static 'favicon.ico' %}"
+      type="image/x-icon"
+    />
+
+    <style>
+      /* Custom styles similar to the first HTML code */
+
+      .card-img-holder img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+      }
+
+      .card {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        margin: 15px;
+        width: 100%;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      .card-content {
+        padding: 20px;
+      }
+
+      .blog-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 10px;
+      }
+
+      .description {
+        font-size: 0.875rem;
+        color: #555;
+        margin-bottom: 20px;
+      }
+
+      .blog-time {
+        font-size: 0.875rem;
+        color: #999;
+        margin-bottom: 10px;
+      }
+
+      .btn {
+        background-color: #007bff;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+      }
+
+      .btn:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+      }
+
+      .container {
+        max-width: 80rem;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      .header {
+        margin-bottom: 1.5rem;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 2.25rem;
+        font-weight: bold;
+        color: #111827;
+      }
+
+      .header p {
+        color: #6b7280;
+      }
+    </style>
+  </head>
+  <body class="bg-white text-gray-800">
+    <!-- Navbar inclusion -->
+    {% include "components/Navbar.html" %}
+
+    <div class="container py-20">
+      <div class="header">
+        <h1 class="text-3xl font-bold">Our Recent Blogs</h1>
+        <p class="text-gray-500 py-2">
+          Surround yourself with the community and resources to help bring your
+          vision to life.
+        </p>
+      </div>
+
+      <div
+        class="blog-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+      >
+        {% for blog in blogs %}
+        <div class="card">
+          <div class="card-img-holder">
+            {% if blog.image %}
+            <img src="{{ blog.image.url }}" alt="Blog image" />
+            {% else %}
+            <img src="{% static 'default-image.jpg' %}" alt="Default image" />
+            {% endif %}
+          </div>
+          <div class="card-content">
+            <h2 class="blog-title">{{ blog.title }}</h2>
+            <span class="blog-time">{{ blog.created_at|date:"l F j, Y" }}</span>
+            <p class="description">{{ blog.summary }}</p>
+            <a href="{% url 'blog' blog.id %}" class="btn">Read More</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Footer inclusion -->
+    {% include "components/footer.html" %}
+
+    <!-- Add your JavaScript functionality -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const cards = document.querySelectorAll(".card");
+
+        cards.forEach((card) => {
+          card.addEventListener("mouseover", function () {
+            card.querySelector(".card-img-holder img").style.transform =
+              "scale(1.1)";
+          });
+
+          card.addEventListener("mouseout", function () {
+            card.querySelector(".card-img-holder img").style.transform =
+              "scale(1)";
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

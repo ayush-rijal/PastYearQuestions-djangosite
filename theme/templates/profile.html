@@ -1,0 +1,192 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ user_profile.user.username }}'s Profile - Past Questions</title>
+    <link href="{% static 'css/output.css' %}" rel="stylesheet" />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link
+      rel="shortcut icon"
+      href="{% static 'favicon.ico' %}"
+      type="image/x-icon"
+    />
+
+    <!-- Bootstrap icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css"
+    />
+  </head>
+
+  <body class="bg-gray-100">
+    {% include "components/Navbar.html" %}
+
+    <main class="container mx-auto p-4 text-center py-12">
+      <h1 class="text-4xl font-semibold my-5 py-12">
+        {{ user_profile.user.username }}'s Profile
+      </h1>
+      <div class="mb-3">
+        {% for message in messages %}
+        <h5 class="text-{{ message.level_tag }} text-center">{{ message }}</h5>
+        {% endfor %}
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-4 col-12">
+        <div class="flex flex-col items-center">
+          <img
+            src="{{ user_profile2.profile_img.url }}"
+            alt="user-profile"
+            class="w-36 h-36 object-cover rounded-full shadow"
+          />
+          <h2 class="text-3xl mt-4">@{{ user_profile2.user.username }}</h2>
+        </div>
+        <div class="flex flex-col items-center col-12">
+          <h2 class="text-2xl first-letter:uppercase">
+            {{user_profile2.user.first_name|default:"Full name not available"}}
+            {{user_profile2.user.last_name}}
+          </h2>
+          <p class="fs-5">
+            <i class="bi bi-gender-ambiguous">
+              {{ user_profile.gender|default:'Gender Not Provided' }}
+            </i>
+          </p>
+          <p class="text-lg fs-5">
+            <i class="bi bi-geo-alt-fill"></i>
+            {{ user_profile.location|default:'Location Not Provided' }}
+          </p>
+          <p class="text-lg">
+            <i class="bi bi-file-person item-center"></i>
+            {{ user_profile.bio|default:'Bio Not Provided' }}
+          </p>
+        </div>
+        {% if request.user.username == user_profile2.user.username %}
+        <div class="flex justify-center gap-2 mb-4 items-center">
+          <a
+            href="{% url 'edit_profile'%}"
+            class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-200"
+          >
+            Edit
+          </a>
+        </div>
+        {% endif %}
+      </div>
+      <hr class="my-5 border-gray-300" />
+
+      <div
+        class="{% if request.user.username == user_profile2.user.username %}grid grid-cols-1 lg:grid-cols-2 gap-4{% else %}grid grid-cols-1{% endif %}"
+      >
+        <div>
+          <h3 class="text-xl font-semibold mb-2">
+            Quiz attended by {{ user_profile2.user.username }}
+          </h3>
+          <table
+            class="min-w-full bg-white border border-gray-300 rounded-lg shadow-md"
+          >
+            <thead class="bg-gray-200">
+              <tr>
+                <th class="py-2 px-4 border-b">#</th>
+                <th class="py-2 px-4 border-b">Quiz</th>
+                <th class="py-2 px-4 border-b">Marks</th>
+                <th class="py-2 px-4 border-b">Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for submission in submissions %}
+              <tr class="hover:bg-gray-100">
+                <td class="py-2 px-4 border-b" scope="row">
+                  {{ forloop.counter }}
+                </td>
+                <td
+                  class="py-2 px-4 border-b"
+                  title="{{ submission.quiz.title }}"
+                >
+                  {{ submission.quiz.title|truncatewords:6 }}
+                </td>
+                <td class="py-2 px-4 border-b">{{ submission.score }}</td>
+                <td class="py-2 px-4 border-b">
+                  {{ submission.submitted_at|timesince }} ago
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        {% if request.user.username == user_profile2.user.username %}
+        <div>
+          <h3 class="text-xl font-semibold mb-2">
+            {{ user_profile2.user.username }}'s performance
+          </h3>
+          <p class="text-gray-600">
+            Details about {{ user_profile2.user.username }}'s performance will
+            be displayed here.
+          </p>
+          <canvas id="performanceChart"></canvas>
+          <p id="noDataMessage" class="text-red-500 hidden">
+            No performance data available.
+          </p>
+        </div>
+        {% endif %}
+      </div>
+    </main>
+
+    {% include "components/footer.html" %}
+    <script>
+      var performanceData = {
+        labels: [
+          {% for submission in submissions %}
+            '{{ submission.quiz.title|truncatewords:3 }}',
+          {% endfor %}
+        ],
+        datasets: [
+          {
+            label: 'Correct Answers',
+            data: [
+              {% for submission in submissions %}
+                {{ submission.correct_answers }},
+              {% endfor %}
+            ],
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+          },
+          {
+            label: 'Wrong Answers',
+            data: [
+              {% for submission in submissions %}
+                {{ submission.wrong_answers }},
+              {% endfor %}
+            ],
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1
+          }
+        ]
+      };
+
+      if (performanceData.labels.length > 0) {
+        var ctx = document.getElementById('performanceChart').getContext('2d');
+        var performanceChart = new Chart(ctx, {
+          type: 'bar',
+          data: performanceData,
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+      } else {
+        document.getElementById('performanceChart').style.display = 'none';
+        document.getElementById('noDataMessage').style.display = 'block';
+      }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

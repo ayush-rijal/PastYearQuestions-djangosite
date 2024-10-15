@@ -1,0 +1,269 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Past Questions - Footer with Messaging</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "footer-bg": "#1f2937",
+              "footer-text": "#f3f4f6",
+              "footer-hover": "#ec4899",
+              "footer-muted": "#9ca3af",
+            },
+            boxShadow: {
+              "footer-glow": "0 0 15px rgba(236, 72, 153, 0.5)",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .footer-fade-in {
+        animation: fadeIn 0.5s ease-out forwards;
+      }
+      .contact-form-container {
+        background: rgba(
+          31,
+          41,
+          55,
+          0.9
+        ); /* Dark background with transparency */
+        color: #f3f4f6; /* Light text color */
+        padding: 16px;
+        border-radius: 10px;
+        width: 300px; /* Adjust width as needed */
+        max-height: 400px; /* Adjust height as needed */
+        overflow-y: auto; /* Allow scrolling if the content is too long */
+      }
+      .contact-form-container h5 {
+        margin-bottom: 12px;
+      }
+      .contact-form-container input,
+      .contact-form-container textarea,
+      .contact-form-container button {
+        width: 100%;
+        margin-bottom: 8px;
+      }
+    </style>
+  </head>
+  <body class="font-poppins bg-gray-100 text-gray-800 leading-relaxed">
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-12">
+      <!-- Your main content here -->
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="bg-footer-bg py-16 relative overflow- sm:block hidden">
+      <div class="container mx-auto max-w-7xl px-4 relative z-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div class="footer-fade-in" style="animation-delay: 0.1s">
+            <h4
+              class="relative mb-6 flex items-center text-footer-text text-xl font-bold"
+            >
+              <a
+                class="flex items-center group"
+                href="{% url 'home' %}"
+                aria-label="Logo"
+              >
+                <img
+                  src="{% static 'images/logoD.png' %}"
+                  alt="Company Logo"
+                  class="h-10 md:h-12 lg:h-16 w-auto mr-3 transition-transform duration-300 group-hover:scale-110"
+                />
+                <span
+                  class="group-hover:text-footer-hover transition-colors duration-300"
+                  >TASP SIOTINIS</span
+                >
+              </a>
+            </h4>
+            <p class="text-footer-muted mt-4 leading-relaxed">
+              Empowering students with comprehensive past question resources for
+              better exam preparation.
+            </p>
+          </div>
+          <div class="footer-fade-in" style="animation-delay: 0.2s">
+            <h4 class="text-lg font-semibold mb-6 relative text-footer-text">
+              Quick Links
+              <span
+                class="block h-0.5 bg-footer-hover w-16 absolute left-0 bottom-[-8px] rounded-full"
+              ></span>
+            </h4>
+            <ul class="space-y-3">
+              <li>
+                <a
+                  class="text-footer-muted hover:text-footer-hover transition-all duration-300 flex items-center"
+                  href="#"
+                  ><i class="fas fa-chevron-right mr-2 text-xs"></i>About Us</a
+                >
+              </li>
+              <li>
+                <a
+                  class="text-footer-muted hover:text-footer-hover transition-all duration-300 flex items-center"
+                  href="#"
+                  ><i class="fas fa-chevron-right mr-2 text-xs"></i>Our
+                  Services</a
+                >
+              </li>
+              <li>
+                <a
+                  class="text-footer-muted hover:text-footer-hover transition-all duration-300 flex items-center"
+                  href="#"
+                  ><i class="fas fa-chevron-right mr-2 text-xs"></i>Privacy
+                  Policy</a
+                >
+              </li>
+              <li>
+                <a
+                  class="text-footer-muted hover:text-footer-hover transition-all duration-300 flex items-center"
+                  href="#"
+                  ><i class="fas fa-chevron-right mr-2 text-xs"></i>FAQ</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="footer-fade-in" style="animation-delay: 0.3s">
+            <h4 class="text-lg font-semibold mb-6 relative text-footer-text">
+              Contact Us
+              <span
+                class="block h-0.5 bg-footer-hover w-16 absolute left-0 bottom-[-8px] rounded-full"
+              ></span>
+            </h4>
+            <ul class="space-y-3">
+              <li class="flex items-center">
+                <i class="fas fa-map-marker-alt text-footer-hover mr-3"></i>
+                <span class="text-footer-muted"
+                  >123 Education St, Knowledge City, 12345</span
+                >
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-phone-alt text-footer-hover mr-3"></i>
+                <a
+                  href="tel:+1234567890"
+                  class="text-footer-muted hover:text-footer-hover transition-all duration-300"
+                  >+1 (234) 567-890</a
+                >
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-envelope text-footer-hover mr-3"></i>
+                <a
+                  href="mailto:info@pastquestions.com"
+                  class="text-footer-muted hover:text-footer-hover transition-all duration-300"
+                  >info@pastquestions.com</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="footer-fade-in" style="animation-delay: 0.4s">
+            <h4 class="text-lg font-semibold mb-6 relative text-footer-text">
+              Stay Connected
+              <span
+                class="block h-0.5 bg-footer-hover w-16 absolute left-0 bottom-[-8px] rounded-full"
+              ></span>
+            </h4>
+            <div class="flex space-x-4 mb-6">
+              <a
+                class="bg-footer-muted bg-opacity-20 hover:bg-footer-hover text-footer-text hover:text-white w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 hover:shadow-footer-glow"
+                href="#"
+                aria-label="Facebook"
+                ><i class="fab fa-facebook-f"></i
+              ></a>
+              <a
+                class="bg-footer-muted bg-opacity-20 hover:bg-footer-hover text-footer-text hover:text-white w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 hover:shadow-footer-glow"
+                href="#"
+                aria-label="Instagram"
+                ><i class="fab fa-instagram"></i
+              ></a>
+              <a
+                class="bg-footer-muted bg-opacity-20 hover:bg-footer-hover text-footer-text hover:text-white w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 hover:shadow-footer-glow"
+                href="#"
+                aria-label="LinkedIn"
+                ><i class="fab fa-linkedin-in"></i
+              ></a>
+            </div>
+            <!-- Contact Form Container -->
+            <div class="contact-form-container">
+              <h5 class="text-sm font-semibold mb- text-footer-text">
+                Feedback Please
+              </h5>
+              <form
+                class="flex flex-col space-y-4"
+                onsubmit="event.preventDefault(); alert('Message sent!');"
+              >
+                <textarea
+                  placeholder="Feedback Matters !!"
+                  rows="4"
+                  required
+                  class="bg-footer-muted bg-opacity-20 text-footer-text px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-footer-hover"
+                ></textarea>
+                <button
+                  type="submit"
+                  class="bg-footer-hover text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-footer-hover focus:ring-offset-2 focus:ring-offset-footer-bg"
+                >
+                  Send
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="mt-12 border-t border-footer-muted border-opacity-20 pt-8 text-center relative z-10"
+      >
+        <p class="text-sm text-footer-muted">
+          Â© {% now "Y" %} Past Year Questions |
+          <a
+            href="#"
+            class="text-footer-muted hover:text-footer-hover transition-colors duration-300"
+            >Terms</a
+          >
+          |
+          <a
+            href="#"
+            class="text-footer-muted hover:text-footer-hover transition-colors duration-300"
+            >Privacy</a
+          >
+        </p>
+      </div>
+      <div
+        class="absolute inset-0 bg-gradient-to-br from-footer-bg via-footer-bg to-footer-hover opacity-10"
+      ></div>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", (event) => {
+        const footerElements = document.querySelectorAll(".footer-fade-in");
+        footerElements.forEach((el, index) => {
+          setTimeout(() => {
+            el.style.opacity = "1";
+            el.style.transform = "translateY(0)";
+          }, 100 * (index + 1));
+        });
+      });
+    </script>
+  </body>
+</html>

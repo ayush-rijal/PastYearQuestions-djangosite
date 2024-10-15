@@ -1,0 +1,139 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ blog.title }}</title>
+    <link href="{% static 'css/output.css' %}" rel="stylesheet" />
+    <link
+      rel="shortcut icon"
+      href="{% static 'favicon.ico' %}"
+      type="image/x-icon"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100">
+    {% include "components/Navbar.html" %}
+
+    <div class="container mx-auto px-4 py-20">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Blog Content and Comments on the Left -->
+        <div class="col-span-1 md:col-span-2">
+          <article class="bg-white p-6 rounded-lg shadow mb-8">
+            <h1 class="text-4xl font-semibold mb-4">{{ blog.title }}</h1>
+
+            <div class="flex items-center space-x-4 mb-6">
+              <img
+                src="{{ blog.author.profile.profile_img.url }}"
+                alt="{{ blog.author.username }}"
+                class="w-10 h-10 rounded-full"
+              />
+              <div>
+                <p class="text-sm font-medium">{{ blog.author.username }}</p>
+                <p class="text-sm text-gray-500">
+                  {{ blog.created_at|date:"l F j, Y" }}
+                </p>
+              </div>
+            </div>
+
+            {% if blog.image %}
+            <img
+              src="{{ blog.image.url }}"
+              alt="{{ blog.title }}"
+              class="w-full h-64 object-cover rounded-lg mb-6"
+            />
+            {% else %}
+            <img
+              src="{% static 'default-image.jpg' %}"
+              alt="Default image"
+              class="w-full h-64 object-cover rounded-lg mb-6"
+            />
+            {% endif %}
+
+            <div id="blog-content" class="prose max-w-none">
+              {{ blog.content|safe }}
+            </div>
+          </article>
+
+          <!-- Comments Section -->
+          <div class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-2xl font-semibold mb-4">Comments</h2>
+            <!-- Add your comments section here -->
+          </div>
+        </div>
+
+        <!-- Sidebar: Search Bar and Recommended Blogs on the Right -->
+        <aside class="col-span-1">
+          <div class="sticky top-8 mb-8">
+            <input
+              id="search-bar"
+              class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder="Search blog content..."
+              type="text"
+            />
+          </div>
+
+          <div class="recommendations bg-white p-6 rounded-lg shadow">
+            <h2 class="text-xl mb-4">Recommended Blogs</h2>
+            <ul class="space-y-4">
+              {% for recommended_blog in recommended_blogs %}
+              <li class="flex items-center space-x-4">
+                {% if recommended_blog.image %}
+                <img
+                  src="{{ recommended_blog.image.url }}"
+                  alt="{{ recommended_blog.title }}"
+                  class="w-16 h-16 object-cover rounded-lg"
+                />
+                {% else %}
+                <img
+                  src="{% static 'default-image.jpg' %}"
+                  alt="Default image"
+                  class="w-16 h-16 object-cover rounded-lg"
+                />
+                {% endif %}
+                <div>
+                  <h3 class="font-semibold text-sm">
+                    <a
+                      href="{% url 'blog_view' recommended_blog.id %}"
+                      class="hover:underline"
+                      >{{ recommended_blog.title }}</a
+                    >
+                  </h3>
+                  <p class="text-gray-500 text-xs">
+                    {{ recommended_blog.author.username }}
+                  </p>
+                </div>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    {% include "components/Footer.html" %}
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Search bar functionality for highlighting matching text in the blog content
+        const searchBar = document.getElementById("search-bar");
+        if (searchBar) {
+          searchBar.addEventListener("input", function () {
+            const searchText = this.value.toLowerCase();
+            const blogContent = document.getElementById("blog-content");
+            if (blogContent) {
+              const content = blogContent.innerHTML;
+              const regex = new RegExp(searchText, "gi");
+              const highlighted = content.replace(
+                regex,
+                (match) => `<span class="bg-yellow-300">${match}</span>`
+              );
+              blogContent.innerHTML = highlighted;
+            }
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

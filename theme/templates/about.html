@@ -1,0 +1,290 @@
+{% load static %} {% load static tailwind_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% load static tailwind_tags %}
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About Us - Global Education Innovators</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
+      crossorigin="anonymous"
+    />
+    {% tailwind_css %}
+    <script
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+      defer
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+    />
+    <link href="{% static 'css/output.css' %}" rel="stylesheet" />
+    <link
+      rel="shortcut icon"
+      href="{% static 'favicon.ico' %}"
+      type="image/x-icon"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+
+  <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    {% include "components/Navbar.html" %}
+
+    <main class="container mx-auto py-20 px-4">
+      <!-- Previous content remains unchanged -->
+
+      <section class="mb-16 bg-white rounded-lg shadow-xl p-8">
+        <h2 class="text-3xl font-bold mb-10 text-center text-indigo-800">
+          Our Global Reach
+        </h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div>
+            <canvas id="globalReachChart"></canvas>
+          </div>
+          <div class="flex flex-col justify-center">
+            <p class="text-lg text-gray-700 mb-4">
+              Our educational programs have made a significant impact across
+              various continents. We're proud to serve diverse communities and
+              contribute to global learning initiatives.
+            </p>
+            <ul class="list-disc list-inside text-gray-700 space-y-2">
+              <li>
+                Established partnerships with over 500 universities worldwide
+              </li>
+              <li>Implemented educational programs in 120+ countries</li>
+              <li>Developed curriculum in 30+ languages</li>
+              <li>Reached over 10 million students globally</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold mb-10 text-center text-indigo-800">
+          Our Global Team
+        </h2>
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-centr justify-between"
+        >
+          <div
+            class="bg-white shadow-lg rounded-lg p-6 transform transition duration-500 hover:scale-105"
+          >
+            <img
+              src="{% static 'images/arun123.png' %}"
+              alt="Arun Joshi"
+              class="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
+            />
+            <h3 class="text-xl font-semibold text-gray-800 text-center">
+              Arun Joshi
+            </h3>
+            <p class="text-gray-600 mt-2 text-center">Founder</p>
+            <p class="mt-4 text-gray-700">
+              As the founder, Our goal is to create quiz websites that inspires
+              learning and curiosity. We want to provide an engaging platfrom
+              where users can challlenge themeslves and explore new expore new
+              subject while having fun. Together, we can foster a Community
+              dedicated to growth and knowledge.
+            </p>
+            <div class="mt-4 flex justify-center space-x-4">
+              <a href="#" class="text-indigo-500 hover:text-indigo-600"
+                ><i class="fab fa-linkedin"></i
+              ></a>
+              <a href="#" class="text-indigo-500 hover:text-indigo-600"
+                ><i class="fab fa-twitter"></i
+              ></a>
+            </div>
+          </div>
+          <div
+            class="bg-white shadow-lg rounded-lg p-6 transform transition duration-500 hover:scale-105"
+          >
+            <img
+              src="{% static 'images/jane-smith.jpg' %}"
+              alt="Ayush Rijal"
+              class="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
+            />
+            <h3 class="text-xl font-semibold text-gray-800 text-center">
+              Ayush Rijal
+            </h3>
+            <p class="text-gray-600 mt-2 text-center">Founder</p>
+            <p class="mt-4 text-gray-700">
+              As the founder, Our goal is to create quiz websites that inspires
+              learning and curiosity. We want to provide an engaging platfrom
+              where users can challlenge themeslves and explore new expore new
+              subject while having fun. Together, we can foster a Community
+              dedicated to growth and knowledge.
+            </p>
+            <div class="mt-4 flex justify-center space-x-4">
+              <a href="#" class="text-indigo-500 hover:text-indigo-600"
+                ><i class="fab fa-linkedin"></i
+              ></a>
+              <a href="#" class="text-indigo-500 hover:text-indigo-600"
+                ><i class="fab fa-twitter"></i
+              ></a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-16" x-data="{ activeTab: 'mission' }">
+        <h2 class="text-3xl font-bold mb-10 text-center text-indigo-800">
+          Our Vision & Values
+        </h2>
+        <div class="bg-white rounded-lg shadow-xl overflow-hidden">
+          <div class="flex border-b">
+            <button
+              @click="activeTab = 'mission'"
+              :class="{ 'bg-indigo-500 text-white': activeTab === 'mission', 'bg-gray-100': activeTab !== 'mission' }"
+              class="flex-1 py-4 px-6 text-lg font-semibold focus:outline-none transition duration-300"
+            >
+              Our Mission
+            </button>
+            <button
+              @click="activeTab = 'vision'"
+              :class="{ 'bg-indigo-500 text-white': activeTab === 'vision', 'bg-gray-100': activeTab !== 'vision' }"
+              class="flex-1 py-4 px-6 text-lg font-semibold focus:outline-none transition duration-300"
+            >
+              Our Vision
+            </button>
+            <button
+              @click="activeTab = 'values'"
+              :class="{ 'bg-indigo-500 text-white': activeTab === 'values', 'bg-gray-100': activeTab !== 'values' }"
+              class="flex-1 py-4 px-6 text-lg font-semibold focus:outline-none transition duration-300"
+            >
+              Our Values
+            </button>
+          </div>
+          <div class="p-6">
+            <div x-show="activeTab === 'mission'" class="animate-fade-in">
+              <h3 class="text-2xl font-bold mb-4 text-indigo-800">
+                Our Mission
+              </h3>
+              <p class="text-gray-700">
+                To empower learners worldwide through innovative, accessible,
+                and culturally-responsive educational solutions that bridge gaps
+                and foster global understanding.
+              </p>
+            </div>
+            <div x-show="activeTab === 'vision'" class="animate-fade-in">
+              <h3 class="text-2xl font-bold mb-4 text-indigo-800">
+                Our Vision
+              </h3>
+              <p class="text-gray-700">
+                A world where quality education transcends borders, empowering
+                individuals to become global citizens and lifelong learners,
+                driving positive change in their communities and beyond.
+              </p>
+            </div>
+            <div x-show="activeTab === 'values'" class="animate-fade-in">
+              <h3 class="text-2xl font-bold mb-4 text-indigo-800">
+                Our Values
+              </h3>
+              <ul class="list-disc list-inside text-gray-700 space-y-2">
+                <li>Innovation in Education</li>
+                <li>Global Collaboration</li>
+                <li>Cultural Sensitivity</li>
+                <li>Lifelong Learning</li>
+                <li>Accessibility for All</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-16 bg-white rounded-lg shadow-xl p-8">
+        <h2 class="text-3xl font-bold mb-10 text-center text-indigo-800">
+          Testimonials from Around the World
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div class="bg-gray-100 p-6 rounded-lg">
+            <p class="text-gray-700 mb-4">
+              "Global Education Innovators has transformed our approach to
+              learning. Their programs have opened up new opportunities for our
+              students."
+            </p>
+            <p class="font-semibold">
+              - Maria Rodriguez, Principal, Mexico City
+            </p>
+          </div>
+          <div class="bg-gray-100 p-6 rounded-lg">
+            <p class="text-gray-700 mb-4">
+              "The cultural exchange programs offered by GEI have broadened our
+              students' horizons and fostered global understanding."
+            </p>
+            <p class="font-semibold">
+              - Hiroshi Tanaka, Education Director, Tokyo
+            </p>
+          </div>
+          <div class="bg-gray-100 p-6 rounded-lg">
+            <p class="text-gray-700 mb-4">
+              "GEI's commitment to accessible education has made a significant
+              impact in our rural communities. We're grateful for their
+              support."
+            </p>
+            <p class="font-semibold">
+              - Amina Nkosi, Community Leader, South Africa
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    {% include "components/footer.html" %}
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var ctx = document.getElementById("globalReachChart").getContext("2d");
+        var myChart = new Chart(ctx, {
+          type: "doughnut",
+          data: {
+            labels: [
+              "North America",
+              "Europe",
+              "Asia",
+              "Africa",
+              "South America",
+              "Oceania",
+            ],
+            datasets: [
+              {
+                data: [30, 25, 20, 15, 7, 3],
+                backgroundColor: [
+                  "rgba(255, 99, 132, 0.8)",
+                  "rgba(54, 162, 235, 0.8)",
+                  "rgba(255, 206, 86, 0.8)",
+                  "rgba(75, 192, 192, 0.8)",
+                  "rgba(153, 102, 255, 0.8)",
+                  "rgba(255, 159, 64, 0.8)",
+                ],
+                borderColor: "white",
+                borderWidth: 2,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: "bottom",
+              },
+              title: {
+                display: true,
+                text: "Global Reach by Continent",
+              },
+            },
+          },
+        });
+      });
+    </script>
+  </body>
+</html>

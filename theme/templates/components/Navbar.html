@@ -1,0 +1,437 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Responsive Navbar</title>
+    <link href="{% static 'css/output.css' %}" rel="stylesheet" />
+
+    <!-- Boxicons (Add the link to include icons) -->
+    <link
+      href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="shortcut icon"
+      href="{% static 'images/favicon.ico' %}"
+      type="image/x-icon"
+    />
+
+    <style>
+      /* Ensure the bottom navbar is always visible on mobile devices */
+      .bottom-navbar {
+        display: none;
+      }
+      @media (max-width: 768px) {
+        .lg\:hidden {
+          display: none;
+        }
+        .bottom-navbar {
+          display: flex;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Main Navbar -->
+    <nav
+      class="bg-gray-800 text-white flex justify-between items-center px-4 lg:fixed lg:top-0 lg:w-full lg:z-10 rounded shadow-sm"
+    >
+      <!-- Logo -->
+      <a href="{% url 'home' %}" class="flex items-center font-semibold">
+        <img
+          src="{% static 'images/logoD.png' %}"
+          alt="Company Logo"
+          class="h-[50px] w-auto sm:block hidden"
+        />
+        <img
+          src="{% static 'images/logo-white3.png' %}"
+          alt="Mobile Company Logo"
+          class="h-[50px] w-[100px] sm:hidden left-2s"
+        />
+        <p class="sm:block hidden">Past Year Questions</p></a
+      >
+
+      <!-- Search bar -->
+      <form
+        method="GET"
+        action="{% url 'search_users' %}"
+        class="flex items-center w-full max-w-md"
+      >
+        {% csrf_token %}
+        <div class="relative w-full">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            ></path>
+          </svg>
+          <input
+            type="text"
+            name="q"
+            placeholder="Search User Name..."
+            class="w-full pl-10 pr-4 py-2 rounded-lg bg-gray-700 text-white focus:outline-none focus:bg-gray-600 focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
+      </form>
+
+      <!-- Menu items -->
+      <!-- Home -->
+      <div class="hidden lg:flex space-x-4">
+        <a
+          href="{% url 'home' %}"
+          class="relative pb-1 {% if request.resolver_match.url_name == 'home' %}text-green-500{% else %}hover:text-blue-500{% endif %} transition-colors duration-300"
+        >
+          Home
+          <span
+            class="absolute left-1/2 -translate-x-1/2 bottom-0 h-1 w-1 bg-current rounded-full {% if request.resolver_match.url_name == 'home' %} block{% else %} hidden group-hover:block{% endif %}"
+          >
+          </span>
+        </a>
+
+        <!-- About -->
+        <a
+          href="{% url 'about' %}"
+          class="relative pb-1 {% if request.resolver_match.url_name == 'about' %}text-green-500{% else %}hover:text-blue-500{% endif %} transition-colors duration-300"
+        >
+          About
+          <span
+            class="absolute left-1/2 -translate-x-1/2 bottom-0 h-1 w-1 bg-current rounded-full {% if request.resolver_match.url_name == 'about' %} block{% else %} hidden group-hover:block{% endif %}"
+          >
+          </span>
+        </a>
+
+        <!-- All Quiz -->
+        <a
+          href="{% url 'all_quiz' %}"
+          class="relative pb-1 {% if request.resolver_match.url_name == 'all_quiz' %}text-green-500{% else %}hover:text-blue-500{% endif %} transition-colors duration-300"
+        >
+          All Quiz
+          <span
+            class="absolute left-1/2 -translate-x-1/2 bottom-0 h-1 w-1 bg-current rounded-full {% if request.resolver_match.url_name == 'all_quiz' %} block{% else %} hidden group-hover:block{% endif %}"
+          >
+          </span>
+        </a>
+
+        <!-- Leaderboard -->
+        <a
+          href="{% url 'leaderboard' %}"
+          class="relative pb-1 {% if request.resolver_match.url_name == 'leaderboard' %}text-green-500{% else %}hover:text-blue-500{% endif %} transition-colors duration-300"
+        >
+          Leaderboard
+          <span
+            class="absolute left-1/2 -translate-x-1/2 bottom-0 h-1 w-1 bg-current rounded-full {% if request.resolver_match.url_name == 'leaderboard' %} block{% else %} hidden group-hover:block{% endif %}"
+          >
+          </span>
+        </a>
+
+        <!-- Contact Us -->
+        <a
+          href="{% url 'contact' %}"
+          class="relative pb-1 {% if request.resolver_match.url_name == 'contact' %}text-green-500{% else %}hover:text-blue-500{% endif %} transition-colors duration-300"
+        >
+          Contact Us
+          <span
+            class="absolute left-1/2 -translate-x-1/2 bottom-0 h-1 w-1 bg-current rounded-full {% if request.resolver_match.url_name == 'contact' %} block{% else %} hidden group-hover:block{% endif %}"
+          >
+          </span>
+        </a>
+
+        <!-- Blog -->
+        <a
+          href="{% url 'blogs' %}"
+          class="relative pb-1 {% if request.resolver_match.url_name == 'blogs' %}text-green-500{% else %}hover:text-blue-500{% endif %} transition-colors duration-300"
+        >
+          Blog
+          <span
+            class="absolute left-1/2 -translate-x-1/2 bottom-0 h-1 w-1 bg-current rounded-full {% if request.resolver_match.url_name == 'blogs' %} block{% else %} hidden group-hover:block{% endif %}"
+          >
+          </span>
+        </a>
+
+        {% if request.user.is_superuser %}
+        <!-- Dashboard -->
+        <a
+          href="{% url 'dashboard' %}"
+          class="relative pb-1 {% if request.resolver_match.url_name == 'dashboard' %}text-green-500{% else %}hover:text-blue-500{% endif %} transition-colors duration-300"
+        >
+          Dashboard
+          <span
+            class="absolute left-1/2 -translate-x-1/2 bottom-0 h-1 w-1 bg-current rounded-full {% if request.resolver_match.url_name == 'dashboard' %} block{% else %} hidden group-hover:block{% endif %}"
+          >
+          </span>
+        </a>
+        {% endif %}
+      </div>
+
+      <!-- User menu -->
+      <!-- User profile (shown when logged in) -->
+      {% if request.user.is_authenticated %}
+      <div class="relative m-3">
+        <!-- Profile image button -->
+        <button
+          id="profileMenuButton"
+          class="flex items-center space-x-2 focus:outline-none"
+        >
+          <img
+            src="{{ user_profile.profile_img.url }}"
+            class="rounded-full h-8 w-8"
+            alt="profile_img"
+          />
+          <span>{{ request.user.username }}</span>
+        </button>
+
+        <!-- Dropdown menu (hidden by default) -->
+        <div
+          id="profileDropdown"
+          class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-20 active:text-green-900"
+        >
+          <!-- View Profile -->
+          <a
+            href="{% url 'profile' request.user.username %}"
+            class="block px-4 py-2 text-gray-800 hover:bg-gray-100 active:text-green-900"
+          >
+            View Profile
+          </a>
+          <!-- Logout -->
+          <a
+            href="{% url 'logout' %}"
+            class="block px-4 py-2 text-red-600 hover:bg-red-100"
+          >
+            Logout
+          </a>
+        </div>
+      </div>
+      {% else %}
+      <!-- Login button when user is not logged in -->
+      <a
+        href="{% url 'login' %}"
+        class="bg-green-500 px-4 py-2 rounded-lg hover:bg-green-600 active:text-green-900"
+      >
+        Login
+      </a>
+      {% endif %}
+
+      <!-- Mobile menu toggle -->
+      <button
+        class="lg:hidden flex justify-center w-10 h-10 bg-gray-700 rounded-full items-center hover:bg-gray-600 transition-colors duration-300"
+        type="button"
+        id="mobileMenuButton"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-6 h-6 text-white"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          ></path>
+        </svg>
+      </button>
+    </nav>
+
+    <!-- Mobile menu -->
+    <div
+      class="lg:hidden fixed inset-x-0 top-[60px] p-2 border-t border-gray-200 bg-white shadow-lg"
+      id="mobileMenu"
+    >
+      <div class="flex flex-col space-y-4">
+        <a
+          href="{% url 'home' %}"
+          class="{% if request.resolver_match.url_name == 'home' %}text-green-500{% else %}text-gray-400{% endif %} flex flex-col items-center hover:text-blue-500"
+          >Home</a
+        >
+        <a
+          href="{% url 'all_quiz' %}"
+          class="{% if request.resolver_match.url_name == 'all_quiz' %}text-green-500{% else %}text-gray-400{% endif %} flex flex-col items-center hover:text-blue-500"
+          >All Quiz</a
+        >
+        <a
+          href="{% url 'leaderboard' %}"
+          class="{% if request.resolver_match.url_name == 'leaderboard' %}text-green-500{% else %}text-gray-400{% endif %} flex flex-col items-center hover:text-blue-500"
+          >Leaderboard</a
+        >
+        <a
+          href="{% url 'contact' %}"
+          class="{% if request.resolver_match.url_name == 'contact' %}text-green-500{% else %}text-gray-400{% endif %} flex flex-col items-center hover:text-blue-500"
+          >Contact Us</a
+        >
+        <a
+          href="{% url 'blogs' %}"
+          class="{% if request.resolver_match.url_name == 'blogs' %}text-green-500{% else %}text-gray-400{% endif %} flex flex-col items-center hover:text-blue-500"
+          >Blog</a
+        >
+
+        {% if request.user.is_superuser %}
+        <a
+          href="{% url 'dashboard' %}"
+          class="{% if request.resolver_match.url_name == 'dashboard' %}text-green-500{% else %}text-gray-400{% endif %} flex flex-col items-center hover:text-blue-500"
+          >Dashboard</a
+        >
+        {% endif %}
+
+        <!-- User menu for mobile -->
+        {% if request.user.is_authenticated %}
+        <div class="relative">
+          <button
+            class="bg-gray-200 rounded-full h-10 w-10 flex justify-center items-center hover:bg-gray-300 transition-colors duration-300"
+            id="mobileUserDropdown"
+            aria-expanded="false"
+            data-dropdown-toggle="mobileUserDropdownMenu"
+          >
+            {% if user_profile.profile_img %}
+            <img
+              src="{{ user_profile.profile_img.url }}"
+              class="rounded-full h-8 w-8"
+              alt="User image"
+            />
+            {% else %}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6 text-gray-700"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              ></path>
+            </svg>
+            {% endif %}
+          </button>
+          <div
+            id="mobileUserDropdownMenu"
+            class="hidden z-10 w-44 bg-white rounded divide-y divide-gray-200 shadow-lg"
+            aria-labelledby="mobileUserDropdown"
+          >
+            <div class="py-3 px-4 text-sm text-gray-900">
+              {{ request.user.username }}
+            </div>
+            <ul class="py-1 text-sm text-gray-700">
+              <li>
+                <a
+                  href="{% url 'profile' request.user.username %}"
+                  class="{% if request.resolver_match.url_name == 'profile' %}text-green-500{% else %}text-gray-400{% endif %} flex flex-col items-center hover:text-blue-500"
+                  >Profile</a
+                >
+              </li>
+              <li>
+                <a
+                  href="{% url 'logout' %}"
+                  class="block py-2 px-4 hover:bg-gray-100 active:text-green-900"
+                  >Logout</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+        {% else %}
+        <a
+          href="{% url 'login' %}"
+          class="bg-green-500 px-4 py-2 rounded-lg hover:bg-green-600 transition-colors duration-300"
+          >Login</a
+        >
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Bottom Navbar for Mobile -->
+    <div
+      class="bottom-navbar fixed inset-x-0 bottom-0 bg-gray-800 text-white flex justify-around py-2 px-4 border-t border-gray-700 rounded-md shadow-2xl lg:hidden"
+    >
+      <a
+        href="{% url 'home' %}"
+        class="flex flex-col items-center text-gray-400 hover:text-blue-500 active:text-green-900"
+      >
+        <i class="bx bx-home text-2xl"></i>
+        <span class="text-xs">Home</span>
+      </a>
+      <a
+        href="{% url 'about' %}"
+        class="flex flex-col items-center text-gray-400 hover:text-blue-500 active:text-green-900"
+      >
+        <i class="bx bxs-id-card text-2xl"></i>
+        <span class="text-xs">About</span>
+      </a>
+      <a
+        href="{% url 'all_quiz' %}"
+        class="flex flex-col items-center text-gray-400 hover:text-blue-500 active:text-green-900"
+      >
+        <i class="bx bx-list-ul text-2xl"></i>
+        <span class="text-xs">Quiz</span>
+      </a>
+      <a
+        href="{% url 'leaderboard' %}"
+        class="flex flex-col items-center text-gray-400 hover:text-blue-500 active:text-green-900"
+      >
+        <i class="bx bx-trophy text-2xl"></i>
+        <span class="text-xs">Leaderboard</span>
+      </a>
+      <a
+        href="{% url 'contact' %}"
+        class="flex flex-col items-center text-gray-400 hover:text-blue-500 active:text-green-900"
+      >
+        <i class="bx bx-envelope text-2xl"></i>
+        <span class="text-xs">Contact</span>
+      </a>
+    </div>
+
+    <script>
+      // Toggle mobile menu visibility
+      // Toggle mobile menu visibility
+      document
+        .getElementById("mobileMenuButton")
+        .addEventListener("click", function () {
+          var menu = document.getElementById("mobileMenu");
+          menu.classList.toggle("hidden");
+        });
+
+      // Toggle user dropdown in mobile menu
+      document
+        .getElementById("mobileUserDropdown")
+        .addEventListener("click", function () {
+          var dropdownMenu = document.getElementById("mobileUserDropdownMenu");
+          dropdownMenu.classList.toggle("hidden");
+        });
+
+      // Toggle profile dropdown
+      const profileMenuButton = document.getElementById("profileMenuButton");
+      const profileDropdown = document.getElementById("profileDropdown");
+
+      profileMenuButton.addEventListener("click", () => {
+        profileDropdown.classList.toggle("hidden");
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener("click", (e) => {
+        if (!profileMenuButton.contains(e.target)) {
+          profileDropdown.classList.add("hidden");
+        }
+      });
+
+      // Toggle mobile menu
+      function toggleMobileMenu() {
+        const mobileMenu = document.getElementById("mobile-menu");
+        mobileMenu.classList.toggle("hidden");
+      }
+    </script>
+  </body>
+</html>

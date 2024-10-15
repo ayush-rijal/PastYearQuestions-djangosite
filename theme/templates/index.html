@@ -1,0 +1,940 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Past questions</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="{% static 'css/style.css'%}" />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link
+      rel="shortcut icon"
+      href="{% static 'favicon.ico' %}"
+      type="image/x-icon"
+    />
+
+    {% comment %} CDN links for slider {% endcomment %}
+
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"
+    ></script>
+
+    {% comment %} CDN links for slider {% endcomment %}
+
+{% comment %} CDN links for slider {% endcomment %}
+
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+
+{% comment %} CDN links for slider {% endcomment %}
+
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+
+      /* Keyframes for scroll animation */
+       @keyframes scroll {
+         0% {
+           transform: translateX(0);
+         }
+         100% {
+           transform: translateX(-100%);
+         }
+       }
+
+      /* Animation class for the scroller */
+      .animate-scroll {
+        animation: scroll linear infinite;
+      }
+
+      /* Reverse direction */
+      .animate-scroll-reverse {
+        animation-direction: -20, reverse;
+      }
+
+      /* Speed control */
+      .scroll-fast {
+        animation-duration: 25s;
+      }
+
+      .scroll-normal {
+        animation-duration: 40s;
+      }
+
+      .scroll-slow {
+        animation-duration: 80s;
+      }
+
+      .card {
+        max-width: 100%;
+        padding: 1.5rem;
+        background-color: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.375rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.2s;
+        margin-right: 1rem;
+      }
+
+      .card:hover {
+        background-color: #f3f4f6;
+      }
+
+      .card h5 {
+        margin-bottom: 0.5rem;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #111827;
+      }
+
+      .card p {
+        font-size: 1rem;
+        color: #4b5563;
+      }
+
+      /* Container styles */
+      .scroller-container {
+        overflow: hidden;
+      }
+
+      .scroller {
+        display: flex;
+        flex-wrap: nowrap;
+      }
+
+       {% comment %}  {% endcomment %}
+         .accordion-content {
+           transition: max-height 0.3s ease;
+           overflow: hidden;
+           max-height: 0;
+         }
+         .active .accordion-content {
+           max-height: 250px;
+         }
+         .bio-hidden {
+           display: none;
+         }
+
+         @media (min-width: 768px) {
+           .bio-hidden {
+             display: block;
+           }
+         }
+         /* Hover effect for team members */
+         .team-member:hover .team-info {
+           opacity: 1;
+           transform: translateY(0);
+         }
+
+         /* Dim other members on hover */
+         .team-member:not(:hover) .team-info {
+           opacity: 0.6;
+         }
+
+         .team-info {
+           transition: all 0.3s ease;
+           transform: translateY(10px);
+           opacity: 0;
+         }
+    </style>
+  </head>
+  <body class="bg-gray-100 font-sans">
+    {% include "components/Navbar.html"%}
+    <div class="container mx-auto px-4 py-20 mt-5">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <!-- Left Side: Welcome Message -->
+        <div class="md:w-1/2 mb-6 md:mb-0 text-center md:text-left">
+          <h2 class="text-3xl md:text-5xl font-bold mb-4">
+            Discover Your Next Adventure in
+            <span class="text-violet-600 hover:text-green-900">Learning!</span>
+          </h2>
+          <p class="text-lg md:text-2xl mb-6">
+            Unleash your curiosity with engaging quizzes!
+          </p>
+          <div class="flex justify-center md:justify-start gap-4 mt-6">
+            <a
+              href="{% url 'all_quiz' %}"
+              class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg"
+            >
+              Take a Quiz
+            </a>
+            {% if not request.user.is_authenticated %}
+            <a
+              href="{% url 'register' %}"
+              class="bg-gray-400 hover:bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg"
+            >
+              Sign Up
+            </a>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Right Side: Banner Image -->
+        <div class="md:w-1/2">
+          <img
+            src="{% static 'images/quiz-banner.svg' %}"
+            alt="Banner"
+            class="w-full h-auto grid"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Slider for Categories -->
+    <div class="category-slider-container">
+      <div class="category-slider">
+        {% for category in categories %}
+        <div class="category-item">
+          <a href="{% url 'search' category.name %}" class="category-card">
+            <div class="category-image">
+              <img
+                src="{{ category.image_url }}"
+                alt="{{ category.name }}"
+                class="category-img object-cover"
+              />
+            </div>
+            <div class="category-icon">
+              <i class="fas fa-{{ category.icon }}"></i>
+            </div>
+            <h3 class="category-name">{{ category.name }}</h3>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <style>
+      .category-slider-container {
+        max-width: 100%;
+        overflow: hidden;
+        padding: 40px 0;
+        background: linear-gradient(to right, #f3f4f6, #ffffff, #f3f4f6);
+      }
+
+      .category-slider {
+        display: flex;
+        transition: transform 0.5s ease;
+      }
+
+      .category-item {
+        flex: 0 0 25%; /* Show 4 items at once */
+        max-width: 25%;
+        padding: 0 10px;
+        box-sizing: border-box;
+      }
+
+      .category-card {
+        display: block;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: #333;
+      }
+
+      .category-card:hover {
+        transform: translateY(-5px) scale(1.03);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .category-image {
+        height: 150px;
+        width: auto;
+        overflow: hidden;
+      }
+
+      .category-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .category-icon {
+        height: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        background: linear-gradient(45deg, #3498db, #2980b9);
+        color: #ffffff;
+      }
+
+      .category-name {
+        font-size: 1.1rem;
+        font-weight: 600;
+        text-align: center;
+        padding: 15px;
+        margin: 0;
+        background-color: #ffffff;
+      }
+
+      @media (max-width: 1024px) {
+        .category-item {
+          flex: 0 0 33.333%;
+          max-width: 33.333%;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .category-item {
+          flex: 0 0 50%;
+          max-width: 50%;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .category-item {
+          flex: 0 0 100%;
+          max-width: 100%;
+        }
+      }
+    </style>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const slider = document.querySelector(".category-slider");
+        const items = document.querySelectorAll(".category-item");
+        const totalWidth = items.length * items[0].offsetWidth;
+        let position = 0;
+        let speed = 0.8; // Pixels per frame (slower speed)
+
+        function slide() {
+          position -= speed;
+          if (position <= -totalWidth) {
+            position = 0;
+          }
+          slider.style.transform = `translateX(${position}px)`;
+          requestAnimationFrame(slide);
+        }
+
+        slide();
+
+        // Pause on hover
+        slider.addEventListener("mouseenter", () => (speed = 0));
+        slider.addEventListener("mouseleave", () => (speed = 0.8));
+      });
+    </script>
+
+
+
+<!-- Slider for Categories -->
+<div class="category-slider-container">
+  <div class="category-slider">
+    {% for category in categories %}
+    <div class="category-item">
+      <a href="{% url 'search' category.name %}" class="category-card">
+        <div class="category-image">
+          <img src="{{ category.image_url }}" alt="{{ category.name }}" class="category-img">
+        </div>
+        <div class="category-icon">
+          <i class="fas fa-{{ category.icon }}"></i>
+        </div>
+        <h3 class="category-name">{{ category.name }}</h3>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<style>
+  .category-slider-container {
+    max-width: 100%;
+    overflow: hidden;
+    padding: 40px 0;
+    background: linear-gradient(to right, #f3f4f6, #ffffff, #f3f4f6);
+  }
+
+  .category-slider {
+    display: flex;
+    transition: transform 0.5s ease;
+  }
+
+  .category-item {
+    flex: 0 0 25%; /* Show 4 items at once */
+    max-width: 25%;
+    padding: 0 10px;
+    box-sizing: border-box;
+  }
+
+  .category-card {
+    display: block;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: #333;
+  }
+
+  .category-card:hover {
+    transform: translateY(-5px) scale(1.03);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .category-image {
+    height: 150px;
+    width: auto;
+    overflow: hidden;
+  }
+
+  .category-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .category-icon {
+    height: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    background: linear-gradient(45deg, #3498db, #2980b9);
+    color: #ffffff;
+  }
+
+  .category-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-align: center;
+    padding: 15px;
+    margin: 0;
+    background-color: #ffffff;
+  }
+
+  @media (max-width: 1024px) {
+    .category-item {
+      flex: 0 0 33.333%;
+      max-width: 33.333%;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .category-item {
+      flex: 0 0 50%;
+      max-width: 50%;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .category-item {
+      flex: 0 0 100%;
+      max-width: 100%;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const slider = document.querySelector('.category-slider');
+    const items = document.querySelectorAll('.category-item');
+    const totalWidth = items.length * items[0].offsetWidth;
+    let position = 0;
+    let speed = 0.8; // Pixels per frame (slower speed)
+
+    function slide() {
+      position -= speed;
+      if (position <= -totalWidth) {
+        position = 0;
+      }
+      slider.style.transform = `translateX(${position}px)`;
+      requestAnimationFrame(slide);
+    }
+
+    slide();
+
+    // Pause on hover
+    slider.addEventListener('mouseenter', () => speed = 0);
+    slider.addEventListener('mouseleave', () => speed = 0.8);
+  });
+</script>
+
+<!-- Leaderboard Section -->
+<section class="py-8 bg-white">
+  <div class="container mx-auto px-4">
+    <div
+      class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6"
+    >
+      <div class="mb-4 sm:mb-0 mx-auto">
+        <h1
+          class="text-2xl sm:text-4xl font-bold text-gray-700 text-center"
+        >
+          <div class="mb-4 sm:mb-0 mx-auto">
+            <h1
+              class="text-2xl sm:text-4xl font-bold text-gray-700 text-center"
+            >
+              Leaderboard
+            </h1>
+            <span class="text-xs sm:text-sm text-gray-500 text-center"
+              >View top-performing users</span
+            >
+          </div>
+          <div class="flex items-center justify-between">
+            <button
+              class="disabled flex items-center gap-2 rounded-md bg-blue-600 px-3 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm font-semibold text-white focus:outline-none focus:ring hover:bg-blue-700"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="h-4 w-4"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 4.5v15m0 0l6.75-6.75M12 19.5l-6.75-6.75"
+                />
+              </svg>
+              Export
+            </button>
+          </div>
+        </div>
+
+        <div class="overflow-y-hidden rounded-lg border">
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-max">
+              <thead>
+                <tr
+                  class="bg-blue-600 text-left text-xs font-semibold uppercase tracking-widest text-white"
+                >
+                  <th class="px-3 sm:px-5 py-3">Rank</th>
+                  <th class="px-3 sm:px-5 py-3">Profile</th>
+                  <th class="px-3 sm:px-5 py-3">Username</th>
+                  <th class="px-3 sm:px-5 py-3">Bio</th>
+                  <th class="px-3 sm:px-5 py-3">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="text-gray-500">
+                {% if leaderboard_users %} {% for rank in leaderboard_users %}
+                <tr>
+                  <td
+                    class="items-center border-b border-gray-200 bg-white px-3 sm:px-5 py-5 text-xs sm:text-sm"
+                  >
+                    <p class="whitespace-no-wrap">{{ forloop.counter }}</p>
+                  </td>
+                  <td
+                    class="border-b border-gray-200 bg-white px-2 items-center sm:px-5 py-5 text-xs sm:text-sm"
+                  >
+                    <a href="{% url 'profile' rank.user.username %}"
+                      ><img
+                        src="{{ rank.user.profile.profile_img.url }}"
+                        alt="User Profile"
+                        class="h-8 w-8 sm:h-10 sm:w-10 rounded-full mx-auto"
+                    /></a>
+                  </td>
+                  <td
+                    class="border-b border-gray-200 bg-white px-3 sm:px-5 py-5 text-xs sm:text-sm"
+                  >
+                    <a href="{% url 'profile' rank.user.username %}"
+                      ><p class="whitespace-no-wrap font-semibold">
+                        @{{ rank.user.username }}
+                      </p></a
+                    >
+                  </td>
+                  <td
+                    class="border-b border-gray-200 bg-white px-3 sm:px-5 py-5 text-xs sm:text-sm"
+                  >
+                    <p class="whitespace-no-wrap hover:bg-green-100">
+                      {{ rank.user.profile.bio|truncatewords:5 }}
+                    </p>
+                  </td>
+                  <td
+                    class="border-b border-gray-200 bg-white px-3 sm:px-5 py-5 text-xs sm:text-sm"
+                  >
+                    <a
+                      href="{% url 'profile' rank.user.username %}"
+                      class="bg-gray-800 text-white py-1 px-2 sm:py-2 sm:px-4 rounded hover:text-green-900"
+                      >View Profile</a
+                    >
+                  </td>
+                </tr>
+                {% endfor %} {% else %}
+                <tr>
+                  <td
+                    colspan="5"
+                    class="border-b border-gray-200 bg-white px-5 py-5 text-center text-red-600 font-bold"
+                  >
+                    No User Available on Leaderboard!!
+                  </td>
+                </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+
+          <div
+            class="flex flex-col sm:flex-row items-center border-t bg-white px-5 py-5 sm:justify-between"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 4.5v15m0 0l6.75-6.75M12 19.5l-6.75-6.75"
+            />
+          </svg>
+          Export
+        </button>
+      </div>
+    </div>
+
+    <div class="overflow-y-hidden rounded-lg border">
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-max">
+          <thead>
+            <tr
+              class="bg-blue-600 text-left text-xs font-semibold uppercase tracking-widest text-white"
+            >
+              <th class="px-3 sm:px-5 py-3">Rank</th>
+              <th class="px-3 sm:px-5 py-3">Profile</th>
+              <th class="px-3 sm:px-5 py-3">Username</th>
+              <th class="px-3 sm:px-5 py-3">Bio</th>
+              <th class="px-3 sm:px-5 py-3">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-500">
+            {% if leaderboard_users %} {% for rank in leaderboard_users %}
+            <tr>
+              <td
+                class="items-center border-b border-gray-200 bg-white px-3 sm:px-5 py-5 text-xs sm:text-sm"
+              >
+                <p class="whitespace-no-wrap">{{ forloop.counter }}</p>
+              </td>
+              <td
+                class="border-b border-gray-200 bg-white px-2 items-center sm:px-5 py-5 text-xs sm:text-sm"
+              >
+                <a href="{% url 'profile' rank.user.username %}"
+                  ><img
+                    src="{{ rank.user.profile.profile_img.url }}"
+                    alt="User Profile"
+                    class="h-8 w-8 sm:h-10 sm:w-10 rounded-full mx-auto"
+                /></a>
+              </td>
+              <td
+                class="border-b border-gray-200 bg-white px-3 sm:px-5 py-5 text-xs sm:text-sm"
+              >
+                <a href="{% url 'profile' rank.user.username %}"
+                  ><p class="whitespace-no-wrap font-semibold">
+                    @{{ rank.user.username }}
+                  </p></a
+                >
+              </td>
+              <td
+                class="border-b border-gray-200 bg-white px-3 sm:px-5 py-5 text-xs sm:text-sm"
+              >
+                <p class="whitespace-no-wrap hover:bg-green-100">
+                  {{ rank.user.profile.bio|truncatewords:5 }}
+                </p>
+              </td>
+              <td
+                class="border-b border-gray-200 bg-white px-3 sm:px-5 py-5 text-xs sm:text-sm"
+              >
+                <a
+                  href="{% url 'profile' rank.user.username %}"
+                  class="bg-gray-800 text-white py-1 px-2 sm:py-2 sm:px-4 rounded hover:text-green-900"
+                  >View Profile</a
+                >
+              </td>
+            </tr>
+            {% endfor %} {% else %}
+            <tr>
+              <td
+                colspan="5"
+                class="border-b border-gray-200 bg-white px-5 py-5 text-center text-red-600 font-bold"
+              >
+                No User Available on Leaderboard!!
+              </td>
+            </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+
+      <div
+        class="flex flex-col sm:flex-row items-center border-t bg-white px-5 py-5 sm:justify-between"
+      >
+        <span class="text-xs text-gray-600 sm:text-sm">
+          Showing 1 to {{ leaderboard_users|length }} of {{
+          leaderboard_users|length }} Entries
+        </span>
+        <div class="mt-2 inline-flex sm:mt-0">
+          <button
+            class="mr-2 h-10 sm:h-12 w-10 sm:w-12 rounded-full border text-xs sm:text-sm font-semibold text-gray-600 transition duration-150 hover:bg-gray-100"
+          >
+            <a href="{% url 'home' %}">Prev</a>
+          </button>
+          <button
+            class="h-10 sm:h-12 w-10 sm:w-12 rounded-full border text-xs sm:text-sm font-semibold text-gray-600 transition duration-150 hover:bg-gray-100"
+          >
+            <a href="{% url 'leaderboard' %}">Next</a>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+    <!---our features  seaction  -->
+    <div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-extrabold text-gray-900 text-center">
+        Our modern features
+      </h2>
+      <p class="mt-4 text-lg text-gray-500 text-center">
+        Enhancing your learning experience with engaging and interactive quizzes
+      </p>
+
+      <div class="mt-16 flex flex-col md:flex-row">
+        <!-- Left Text Section -->
+        <div class="md:w-1/3 md:pr-4 gap-2">
+          <div class="space-y-8">
+            <div class="flex items-center space-x-4">
+              <div class="bg-indigo-50 p-4 rounded-full">
+                <i class="material-icons text-indigo-500 text-2xl">poll</i>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-gray-900">Result</h3>
+                <p class="mt-1 text-gray-500">
+                  Experience the value of our platform's performance & results
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center space-x-4">
+              <div class="bg-indigo-50 p-4 rounded-full">
+                <i class="material-icons text-indigo-500 text-2xl"
+                  >integration_instructions</i
+                >
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-gray-900">
+                  App Integrations
+                </h3>
+                <p class="mt-1 text-gray-500">
+                  Bring all your tools & data together. & join with many of
+                  other apps.
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center space-x-4">
+              <div class="bg-indigo-50 p-4 rounded-full">
+                <i class="material-icons text-indigo-500 text-2xl">event</i>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-gray-900">Event</h3>
+                <p class="mt-1 text-gray-500">
+                  Organized to provide you with the resources & connections you
+                  need
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Center Image Section -->
+        <div class="md:w-1/3 flex justify-center items-center mt-3 mb-3">
+          <div class="bg-black rounded-2xl p-4 w-80">
+            <div class="text-white">
+              <div class="flex justify-between items-center">
+                <i class="material-icons">arrow_left</i>
+                <i class="material-icons">more_vert</i>
+              </div>
+              <div class="mt-8">
+                <h3 class="text-lg">All Score Card</h3>
+                <p class="text-sm text-gray-400">Apr 14, 2021 - 20:23</p>
+              </div>
+              <div class="mt-4 bg-gray-800 p-4 rounded-lg">
+                <h4 class="text-sm text-gray-400">Total Score</h4>
+                <p class="text-2xl mt-2">
+                  1000
+                  <strong
+                    class="hover:text-green-700 text-white font-sans font-semiblod"
+                    >Points</strong
+                  >
+                </p>
+              </div>
+              <div class="mt-8">
+                <h4 class="text-sm text-gray-400">Recent Score</h4>
+                <div class="mt-4 space-y-4">
+                  <div class="flex justify-between items-center">
+                    <div class="flex items-center space-x-4">
+                      <div class="bg-gray-700 p-2 rounded-full">
+                        <i class="material-icons text-white">package</i>
+                      </div>
+                      <div>
+                        <h5 class="text-sm">Technology</h5>
+                        <p class="text-xs text-gray-400">Apr 14 - 15:34</p>
+                      </div>
+                    </div>
+                    <p class="text-green-500">
+                      200
+                      <strong
+                        class="hover:text-green-700 text-white font-sans font-semiblod"
+                      >
+                        Point</strong
+                      >
+                    </p>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <div class="flex items-center space-x-4">
+                      <div class="bg-gray-700 p-2 rounded-full">
+                        <i class="material-icons text-white">quiz</i>
+                      </div>
+                      <div>
+                        <h5 class="text-sm">CEE - 2023</h5>
+                        <p class="text-xs text-gray-400">Apr 14 - 16:34</p>
+                      </div>
+                    </div>
+                    <p class="text-red-500">
+                      -20
+                      <strong
+                        class="hover:text-green-700 text-white font-sans font-semiblod"
+                      >
+                        Point</strong
+                      >
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-8 flex justify-between">
+                <i class="material-icons text-gray-400">home</i>
+                <i class="material-icons text-gray-400">bar_chart</i>
+                <i class="material-icons text-gray-400"
+                  >account_balance_wallet</i
+                >
+                <i class="material-icons text-gray-400">person</i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Text Section -->
+        <div class="md:w-1/3 md:pl-4 gap-2">
+          <div class="space-y-8">
+            <div class="flex items-center space-x-4">
+              <div class="bg-indigo-50 p-4 rounded-full">
+                <i class="material-icons text-indigo-500 text-2xl">book</i>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-gray-900">
+                  Special Guide
+                </h3>
+                <p class="mt-1 text-gray-500">
+                  One guide for all our features to get more from our platform
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center space-x-4">
+              <div class="bg-indigo-50 p-4 rounded-full">
+                <i class="material-icons text-indigo-500 text-2xl">bar_chart</i>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-gray-900">
+                  Data Reporting
+                </h3>
+                <p class="mt-1 text-gray-500">
+                  Get real-time insight into progress & allows teams to track
+                  their work
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center space-x-4">
+              <div class="bg-indigo-50 p-4 rounded-full">
+                <i class="material-icons text-indigo-500 text-2xl">menu_book</i>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-gray-900">
+                  Presentation
+                </h3>
+                <p class="mt-1 text-gray-500">
+                  Plan and structure work how you want. Quickly organizing
+                  tasks.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--slider sections-->
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Select all accordion elements
+        const accordions = document.querySelectorAll(".accordion");
+
+        accordions.forEach((accordion) => {
+          // Get the accordion button and content
+          const toggleButton = accordion.querySelector(".accordion-toggle");
+          const content = accordion.querySelector(".accordion-content");
+
+          toggleButton.addEventListener("click", () => {
+            // Check if the current accordion is active
+            const isActive = accordion.classList.contains("active");
+
+            // Remove 'active' class from all accordions to collapse them
+            accordions.forEach((acc) => {
+              acc.classList.remove("active");
+              acc.querySelector(".accordion-content").style.maxHeight = "0";
+            });
+
+            if (!isActive) {
+              // Add 'active' class to the current accordion to expand it
+              accordion.classList.add("active");
+              content.style.maxHeight = content.scrollHeight + "px";
+            }
+          });
+        });
+      });
+    </script>
+
+    <!---footer seaction  -->
+
+    {% include "components/footer.html"%}
+  </body>
+</html>
