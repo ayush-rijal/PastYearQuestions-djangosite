@@ -26,10 +26,10 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
 
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "pastyearquestions.blog", "18.118.19.96"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "pastyearquestions.blog", "18.118.19.96","pastyearquestions-djangosite-production.up.railway.app"]
 # ALLOWED_HOSTS = ["pastyearquestions.blog", "18.118.19.96"]
 
-CSRF_TRUSTED_ORIGINS=["https://pastyearquestions.blog"]
+CSRF_TRUSTED_ORIGINS=["https://pastyearquestions.blog","https://pastyearquestions-djangosite-production.up.railway.app"]
 
 # Application definition
 
