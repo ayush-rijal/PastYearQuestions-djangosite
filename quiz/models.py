@@ -268,7 +268,8 @@ from django.dispatch import receiver
 
 class Category(models.Model):
     name = models.CharField(max_length=15)
-    image_url=models.URLField(max_length=200, blank=True, null=True) # Add field for image URL
+    # image_url=models.URLField(max_length=200, blank=True, null=True) # Add field for image URL
+    image_url = models.ImageField(upload_to='category_images/', blank=True, null=True)  # Field to upload image from local device
     icon=models.CharField(max_length=50, blank=True, null=True) # Add field for icon (its being that blue line between image and title of category slider)
 
 
