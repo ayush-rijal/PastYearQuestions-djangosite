@@ -48,10 +48,10 @@ class Quiz(models.Model):
             for index, row in df.iterrows():
                 question_text = row['Question']
                 choices = {
-                    'A': row['Option A'],
-                    'B': row['Option B'],
-                    'C': row['Option C'],
-                    'D': row['Option D']
+                    'A': row['A'],
+                    'B': row['B'],
+                    'C': row['C'],
+                    'D': row['D']
                 }
                 correct_answer = row['Answer']
 
