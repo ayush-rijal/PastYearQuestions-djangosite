@@ -1,5 +1,4 @@
 
-
 from django.db import models
 import pandas as pd
 from django.contrib.auth.models import User
@@ -20,57 +19,6 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-# class Quiz(models.Model):
-#     title = models.CharField(max_length=255)
-#     description = models.TextField()
-#     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-#     quiz_file = models.FileField(upload_to='quiz/')
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
-
-#     class Meta:
-#         verbose_name_plural = 'Quizzes'
-
-#     def __str__(self):
-#         return self.title
-
-#     def save(self, *args, **kwargs):
-#         super().save(*args, **kwargs)
-#         if self.quiz_file:
-#             self.import_quiz_from_excel()
-          
-
-#     def import_quiz_from_excel(self):
-#         try:
-#             df = pd.read_excel(self.quiz_file.path)
-#             for index, row in df.iterrows():
-#                 try:
-
-#                     question_text = row['Question']
-#                     print(f"Processing question: {question_text}")  # Debug print
-#                     choices = {
-#                     'A': row['A'],
-#                     'B': row['B'],
-#                     'C': row['C'],
-#                     'D': row['D']
-#                     }
-#                     correct_answer = row['Answer']
-#                     # Check for missing data in the question, choices, or correct answer
-#                     if not question_text or any(pd.isna(choice) for choice in choices.values()) or pd.isna(correct_answer):
-#                         raise ValueError(f"Missing data in row {index}: Question or choices are incomplete.")
-
-
-#                     question, _ = Question.objects.get_or_create(quiz=self, text=question_text)
-
-#                     for choice_key, choice_text in choices.items():
-#                         is_correct = (choice_key == correct_answer)
-#                         print(f"Creating choice: {choice_text}, Is Correct: {is_correct}")  # Debug print
-#                         Choice.objects.get_or_create(question=question, text=choice_text, is_correct=is_correct)
-#                 except Exception as e:
-#                     print(f"Error processing row {index}:{e}") 
-                           
-#         except Exception as e:
-#             print(f"Error importing quiz: {e}")
 class Quiz(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
@@ -86,47 +34,49 @@ class Quiz(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        # Check if the quiz_file field has changed or if it's a new object
-        if self.pk is None or not Quiz.objects.filter(pk=self.pk, quiz_file=self.quiz_file).exists():
-            super().save(*args, **kwargs)
-            if self.quiz_file:
-                self.import_quiz_from_excel()
-        else:
-            # Just save without re-importing from the file
-            super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
+        if self.quiz_file:
+            self.import_quiz_from_excel()
+          
 
     def import_quiz_from_excel(self):
         try:
             df = pd.read_excel(self.quiz_file.path)
+            ##Strip whitespace from the column names 
+            df.columns=df.columns.str.strip()
             for index, row in df.iterrows():
                 try:
-                    question_text = row['Question']
+                    #strip whitespace from all the string values
+                    question_text = str(row['Question']).strip()
                     print(f"Processing question: {question_text}")  # Debug print
                     choices = {
-                        'A': row['A'],
-                        'B': row['B'],
-                        'C': row['C'],
-                        'D': row['D']
+                    'A': str(row['A']).strip(),
+                    'B': str(row['B']).strip(),
+                    'C': str(row['C']).strip(),
+                    'D': str(row['D']).strip()
                     }
                     correct_answer = row['Answer']
                     # Check for missing data in the question, choices, or correct answer
                     if not question_text or any(pd.isna(choice) for choice in choices.values()) or pd.isna(correct_answer):
                         raise ValueError(f"Missing data in row {index}: Question or choices are incomplete.")
 
-                    # Create or update the question
+
                     question, _ = Question.objects.get_or_create(quiz=self, text=question_text)
 
                     for choice_key, choice_text in choices.items():
                         is_correct = (choice_key == correct_answer)
                         print(f"Creating choice: {choice_text}, Is Correct: {is_correct}")  # Debug print
-                        # Create or update choices based on the question
-                        Choice.objects.get_or_create(question=question, text=choice_text, defaults={'is_correct': is_correct})
+                        Choice.objects.get_or_create(question=question, text=choice_text, is_correct=is_correct)
+                # except Exception as e:
+                #     print(f"Error processing row {index}:{e}")    
 
                 except Exception as e:
-                    print(f"Error processing row {index}: {e}") 
-                           
+                    print(f"Error processing row {index}: {e}, Row data: {row}")
+                    print(f"Row data: {row.to_dict()}")  # More detailed error logging
+        
         except Exception as e:
             print(f"Error importing quiz: {e}")
+
 
 
     
