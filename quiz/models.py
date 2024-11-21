@@ -8,10 +8,8 @@ from django.dispatch import receiver
 
 class Category(models.Model):
     name = models.CharField(max_length=15)
-    image_url=models.URLField(max_length=200, blank=True, null=True) # Add field for image URL
-    icon=models.CharField(max_length=50, blank=True, null=True) # Add field for icon (its being that blue line between image and title of category slider)
-
-
+    image_url = models.URLField(max_length=200, blank=True, null=True)
+    icon = models.CharField(max_length=50, blank=True, null=True)
 
     class Meta:
         verbose_name_plural = 'Categories'
@@ -37,52 +35,68 @@ class Quiz(models.Model):
         super().save(*args, **kwargs)
         if self.quiz_file:
             self.import_quiz_from_excel()
-          
 
     def import_quiz_from_excel(self):
         try:
             df = pd.read_excel(self.quiz_file.path)
-            ##Strip whitespace from the column names 
-            df.columns=df.columns.str.strip()
+            df.columns = df.columns.str.strip()  # Strip whitespace from column names
             for index, row in df.iterrows():
                 try:
-                    #strip whitespace from all the string values
                     question_text = str(row['Question']).strip()
-                    print(f"Processing question: {question_text}")  # Debug print
                     choices = {
-                    'A': str(row['A']).strip(),
-                    'B': str(row['B']).strip(),
-                    'C': str(row['C']).strip(),
-                    'D': str(row['D']).strip()
+                        'A': str(row['A']).strip(),
+                        'B': str(row['B']).strip(),
+                        'C': str(row['C']).strip(),
+                        'D': str(row['D']).strip()
                     }
-                    correct_answer = row['Answer']
-                    # Check for missing data in the question, choices, or correct answer
+                    correct_answer = row['Answer'].strip()
+                    subject_category_name = str(row['SubjectCategory']).strip()
+
+                    # Check for missing data
                     if not question_text or any(pd.isna(choice) for choice in choices.values()) or pd.isna(correct_answer):
                         raise ValueError(f"Missing data in row {index}: Question or choices are incomplete.")
 
+                    # Get or create the subject category linked to the current quiz
+                    subject_category, created = SubjectCategory.objects.get_or_create(
+                        name=subject_category_name,
+                        quiz=self  # Ensure the subject category is linked to the current quiz
+                    )
+                    print(f"{'Created' if created else 'Retrieved'} subject category: {subject_category.name}")
 
-                    question, _ = Question.objects.get_or_create(quiz=self, text=question_text)
+                    # Create the question
+                    question, created = Question.objects.get_or_create(
+                        quiz=self,  # Link to the current quiz
+                        text=question_text,
+                        subject_category=subject_category  # Link to the subject category
+                    )
+                    print(f"{'Created' if created else 'Retrieved'} question: {question.text}")
 
+                    # Create choices
                     for choice_key, choice_text in choices.items():
                         is_correct = (choice_key == correct_answer)
-                        print(f"Creating choice: {choice_text}, Is Correct: {is_correct}")  # Debug print
                         Choice.objects.get_or_create(question=question, text=choice_text, is_correct=is_correct)
-                # except Exception as e:
-                #     print(f"Error processing row {index}:{e}")    
+                        print(f"Choice created: {choice_text}, Is Correct: {is_correct}")
 
                 except Exception as e:
                     print(f"Error processing row {index}: {e}, Row data: {row}")
-                    print(f"Row data: {row.to_dict()}")  # More detailed error logging
-        
+
         except Exception as e:
             print(f"Error importing quiz: {e}")
 
+class SubjectCategory(models.Model):
+    name = models.CharField(max_length=100)
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='subject_categories')  # Link to the quiz
 
+    class Meta:
+        verbose_name_plural = 'SubjectCategories'
 
-    
+    def __str__(self):
+        return f"{self.quiz.title}, {self.name}"
+
 class Question(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
     text = models.TextField()
+    subject_category = models.ForeignKey(SubjectCategory, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.text[:50]
@@ -94,6 +108,9 @@ class Choice(models.Model):
 
     def __str__(self):
         return f"{self.question.text[:50]}, {self.text[:20]}"
+
+
+
 
 
 class QuizSubmission(models.Model):

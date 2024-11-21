@@ -1,247 +1,255 @@
- {% load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-      <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>{{ quiz.title }} - PasYear Questions </title>
-        <script src="https://cdn.tailwindcss.com"></script>
-        <link
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-          rel="stylesheet"
-        />
-        <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
-
-        <link href="{% static 'css/output.css' %}" rel="stylesheet">
-
-        <style>
-          html {
-            scroll-behavior: smooth;
-          }
-        </style>
-      </head>
-      <body class="bg-gray-100 min-h-screen font-sans">
-        {% include 'components/Navbar.html'%}
-        <div class="container mx-auto px-4 py-20">
-          <h1 class="text-2xl font-bold text-center text-blue-600 mb-6">
-            {{ quiz.title }}
-            <div>
-              <span class="text-sm text-gray-500"
-                >({{ quiz.question_set.all|length }} Questions)</span
-              >
-            </div>
-          </h1>
-          <p class="text-xl text-center text-gray-700 mb-8 font-sans">
-            {{ quiz.description }}
-          </p>
-
-          <div class="bg-white shadow-md rounded-lg p-6 mb-8">
-            <div class="flex justify-between items-center mb-4">
-              <span class="text-lg text-gray-600">
-                <i class="far fa-calendar-alt mr-2"></i>{{ quiz.created_at
-                |date:"F d, Y" }}
-              </span>
-              <span class="text-lg font-semibold text-blue-600" id="timer">
-                <i class="far fa-clock mr-2"></i>00:00
-              </span>
-              <form id="quiz-form" action="" method="post" class="space-y-6">
-                {% csrf_token %}
-                <div class="flex justify-center space-x-4">
-                  <button
-                    type="button"
-                    id="start-button"
-                    class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
-                  >
-                  <i class="fas fa-play mr-2"></i>Start Quiz
-                    </button>
-                    <button
-                  type="button"
-                  id="restart-button"
-                  class="hidden bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
-                    >
-                    <i class="fas fa-redo mr-2"></i>Restart Quiz
-                    </button>
-                    <button
-                    type="submit"
-                    id="submit-button"
-                    class="hidden bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
-                    >
-                    <i class="fas fa-paper-plane mr-2"></i>Submit Quiz
-                    </button>
-                </div>
-              </form>
-            </div>
-
-            {% for message in messages %}
-            <div
-              id="message-div"
-              class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4"
-              role="alert"
-            >
-              <p class="font-bold">{{ message }}</p>
-            </div>
-            {% endfor %}
-
-            <form id="quiz-form" action="" method="post" class="space-y-6">
-              {% csrf_token %}
-              <input type="hidden" name="score" value="0" id="user-score" />
-
-              {% for question in quiz.question_set.all %}
-              <div class="bg-gray-50 rounded-lg p-6 question">
-                <p class="text-lg text-gray-700 mb-4 select-none">{{ forloop.counter }}). {{ question.text }}</p>
-                <div class="space-y-2">
-                  {% for option in question.choice_set.all %}
-                  <div class="flex items-center">
-                    <input
-                      class="form-radio h-5 w-5 text-blue-600"
-                      type="radio"
-                      name="{{ option.question.id }}"
-                      id="{{ option.id }}"
-                      value="{{ option.text }}"
-                    />
-                    <label class="ml-2 text-gray-700" for="{{ option.id }}">
-                      {{ option.text }}
-                    </label>
-                    {% if option.is_correct %}
-                    <span class="hidden correct-answer">{{ option.text }}</span>
-                    {% endif %}
-                  </div>
-                  {% endfor %}
-                </div>
-              </div>
-              {% endfor %}
-
-              
-            </form>
-
-          </div>
-          
-        </div>
-        {% include 'components/footer.html'%}
-
-        <script>
-          // Elements
-          const startButton = document.getElementById("start-button");
-          const restartButton = document.getElementById("restart-button");
-          const submitButton = document.getElementById("submit-button");
-          const timerSpan = document.getElementById("timer");
-          const quizForm = document.getElementById("quiz-form");
-          const questions = document.querySelectorAll(".question");
-          const userScoreInput = document.getElementById("user-score");
-
-          let quizDuration = questions.length * 60; // convert to seconds
-          let quizTimerId;
-          let quizStarted = false;
-
-          // Start Quiz
-          function startQuiz() {
-            quizStarted = true;
-            startButton.classList.add("hidden");
-            submitButton.classList.remove("hidden");
-            restartButton.classList.remove("hidden");
-            questions.forEach((q) =>
-              q.classList.remove("opacity-50", "pointer-events-none")
-            );
-            quizTimerId = setInterval(updateTimer, 1000);
-          }
-
-          // Update Timer
-          function updateTimer() {
-            const minutes = Math.floor(quizDuration / 60);
-            const seconds = quizDuration % 60;
-            timerSpan.innerHTML = `<i class="far fa-clock mr-2"></i>${minutes}m ${seconds}s`;
-
-            if (quizDuration <= 0) {
-              clearInterval(quizTimerId);
-              submitQuiz();
-            } else {
-              quizDuration--;
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ quiz.title }} - PasYear Questions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+    <link href="{% static 'css/output.css' %}" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f0f4f8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            {% comment %} padding-top:60px; {% endcomment %}
+        }
+       .container{ 
+            margin-top:15px;
+        } 
+        .subject-button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .subject-button.active {
+            background-color: #2c3e50;
+        }
+        .subject-button:hover {
+            background-color: #2980b9;
+        }
+        .question {
+            transition: all 0.3s ease;
+        }
+        .option-button {
+            width: 100%;
+            text-align: left;
+            padding: 10px;
+            margin-bottom: 5px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        .option-button:hover {
+            background-color: #e9ecef;
+        }
+        .option-button.selected {
+            background-color: #007bff;
+            color: white;
+        }
+        .bg-green-500 {
+            background-color: #38a169 !important; /* Green color for correct */
+            color: white !important;
+        }
+        .bg-red-500 {
+            background-color: #e53e3e !important; /* Red color for incorrect */
+            color: white !important;
+        }
+        @media (max-width: 640px) {
+            .navigation-buttons {
+                position: fixed;
+                bottom: 20px;
+                left: 0;
+                right: 0;
+                display: flex;
+                justify-content: space-between;
+                padding: 0 20px;
+                z-index: 1000;
             }
-          }
+        }
+       
+    </style>
+</head>
+<body >
+    {% include 'components/Navbar.html' %}
 
-          // Submit Quiz
-          function submitQuiz() {
-            calculateScore();
-            quizForm.submit();
-          }
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-center text-3xl font-bold text-gray-800 mb-8 bg-white p-4 rounded-lg shadow-md">{{ quiz.title }}</h1>
 
-          // Calculate Score
-          function calculateScore() {
-            let score = 0;
-            questions.forEach((question) => {
-              const selectedInput = question.querySelector("input:checked");
-              const correctAnswer =
-                question.querySelector(".correct-answer").innerText;
-              if (selectedInput && selectedInput.value === correctAnswer) {
-                score += 1;
-              }
+        <!-- Subject Categories -->
+        <div class="flex flex-wrap justify-center mb-6">
+            {% if subject_categories %}
+                {% for category in subject_categories %}
+                    <a href="{% url 'quiz' quiz.id category.id %}" class="subject-button {% if selected_category == category.id %}active{% endif %}">
+                        {{ category.name }}
+                    </a>
+                {% endfor %}
+            {% else %}
+                <p class="text-gray-600 text-lg">No subject categories available.</p>
+            {% endif %}
+        </div>
+
+        <!-- Questions -->
+        <div id="question-container" class="space-y-6">
+            {% for question in questions %}
+                <div id="question-{{ forloop.counter }}" class="question bg-white rounded-lg p-6 shadow-md hidden">
+                    <p class="text-xl font-semibold text-gray-800 mb-4">
+                        <span class="question-number">{{ starting_index|add:forloop.counter0 }}</span>. {{ question.text }}
+                    </p>
+                    <div>
+                        {% for option in question.choice_set.all %}
+                            <button 
+                                class="option-button" 
+                                data-question-id="{{ question.id }}" 
+                                data-option-id="{{ option.id }}" 
+                                data-correct="{{ option.is_correct|yesno:'True,False' }}">
+                                {{ option.text }}
+                            </button>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation-buttons flex flex-col items-center mt-8">
+            <div class="flex justify-between w-full mb-4">
+                <button type="button" id="prev-button" class="hidden bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full">
+                    <i class="fas fa-chevron-left mr-2"></i> Previous
+                </button>
+                <button type="button" id="next-button" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full">
+                    Next <i class="fas fa-chevron-right ml-2"></i>
+                </button>
+            </div>
+            <div id="category-buttons" class="flex flex-wrap justify-center">
+                {% if subject_categories %}
+                    {% for category in subject_categories %}
+                        <a href="{% url 'quiz' quiz.id category.id %}" class="subject-button {% if selected_category == category.id %}active{% endif %}">
+                            {{ category.name }}
+                        </a>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables
+        const questions = document.querySelectorAll(".question");
+        const nextButton = document.getElementById("next-button");
+        const prevButton = document.getElementById("prev-button");
+        let currentQuestionIndex = 0;
+        const questionsPerPage = 5;
+        let selectedOptions = {};
+        const currentQuizId = "{{ quiz.id }}";
+        const currentSubjectCategoryId = "{{ selected_category }}";
+
+        // Show questions
+        function showQuestions() {
+            questions.forEach((q, index) => {
+                if (index >= currentQuestionIndex && index < currentQuestionIndex + questionsPerPage) {
+                    q.classList.remove("hidden");
+                } else {
+                    q.classList.add("hidden");
+                }
             });
-            userScoreInput.value = score;
-          }
 
-          // Highlight Correct Answers
-          function highlightCorrectAnswers() {
-            questions.forEach((question) => {
-              const correctAnswer = question.querySelector(".correct-answer");
-              const correctInput = question.querySelector(
-                `input[value="${correctAnswer.innerText}"]`
-              );
-              correctInput.parentElement.classList.add("bg-green-100");
-              correctInput.nextElementSibling.classList.add(
-                "font-bold",
-                "text-green-700"
-              );
+            prevButton.classList.toggle("hidden", currentQuestionIndex === 0);
+            
+            const isLastPage = currentQuestionIndex + questionsPerPage >= questions.length;
+            nextButton.classList.toggle("hidden", isLastPage);
+            document.getElementById("category-buttons").classList.toggle("hidden", !isLastPage);
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Navigation
+        nextButton.addEventListener("click", () => {
+            if (currentQuestionIndex + questionsPerPage < questions.length) {
+                currentQuestionIndex += questionsPerPage;
+                showQuestions();
+            }
+        });
+
+        prevButton.addEventListener("click", () => {
+            if (currentQuestionIndex - questionsPerPage >= 0) {
+                currentQuestionIndex -= questionsPerPage;
+                showQuestions();
+            }
+        });
+
+        // Option selection
+        document.querySelectorAll(".option-button").forEach(button => {
+            button.addEventListener("click", function () {
+                const questionId = this.dataset.questionId;
+                const isCorrect = this.dataset.correct === "True";
+
+                // Deselect other options
+                document.querySelectorAll(`[data-question-id="${questionId}"]`).forEach(btn => {
+                    btn.classList.remove("selected", "bg-green-500", "bg-red-500", "text-white");
+                });
+
+                // Select current option
+                this.classList.add("selected");
+
+                // Apply color feedback
+                if (isCorrect) {
+                    this.classList.add("bg-green-500", "text-white");
+                } else {
+                    this.classList.add("bg-red-500", "text-white");
+                    // Show correct answer
+                    document.querySelector(`[data-question-id="${questionId}"][data-correct="True"]`).classList.add("bg-green-500", "text-white");
+                }
+
+                // Save selection
+                selectedOptions[questionId] = this.dataset.optionId;
+                saveSelectedOptions();
             });
-            submitButton.disabled = true;
-            document
-              .querySelectorAll(".form-radio")
-              .forEach((radio) => (radio.disabled = true));
-          }
+        });
 
-          // Restart Quiz
-          function restartQuiz() {
-            quizStarted = false;
-            clearInterval(quizTimerId);
-            quizDuration = questions.length * 60;
-            timerSpan.innerHTML = `<i class="far fa-clock mr-2"></i>10:00`;
-            quizForm.reset();
-            submitButton.disabled = false;
-            document
-              .querySelectorAll(".form-radio")
-              .forEach((radio) => (radio.disabled = false));
-            questions.forEach((q) => q.classList.remove("bg-green-100"));
-            document
-              .querySelectorAll("label")
-              .forEach((label) =>
-                label.classList.remove("font-bold", "text-green-700")
-              );
-            startButton.classList.remove("hidden");
-            submitButton.classList.add("hidden");
-            restartButton.classList.add("hidden");
-            questions.forEach((q) =>
-              q.classList.add("opacity-50", "pointer-events-none")
-            );
-          }
+        // Save selected options
+        function saveSelectedOptions() {
+            const key = `quiz_${currentQuizId}_category_${currentSubjectCategoryId}`;
+            localStorage.setItem(key, JSON.stringify(selectedOptions));
+        }
 
-          // Event Listeners
-          startButton.addEventListener("click", startQuiz);
-          restartButton.addEventListener("click", restartQuiz);
-          submitButton.addEventListener("click", submitQuiz);
+        // Restore selected options
+        function restoreSelectedOptions() {
+            const key = `quiz_${currentQuizId}_category_${currentSubjectCategoryId}`;
+            const storedOptions = JSON.parse(localStorage.getItem(key) || "{}");
+            selectedOptions = storedOptions;
+            Object.entries(storedOptions).forEach(([questionId, optionId]) => {
+                const selectedButton = document.querySelector(`[data-question-id="${questionId}"][data-option-id="${optionId}"]`);
+                if (selectedButton) {
+                    selectedButton.click(); // This will trigger the click event and apply the correct styling
+                }
+            });
+        }
 
-          // Initialize
-          questions.forEach((q) =>
-            q.classList.add("opacity-50", "pointer-events-none")
-          );
+        // Initialize
+        window.addEventListener("load", () => {
+            showQuestions();
+            restoreSelectedOptions();
+        });
 
-          // Check if quiz is already submitted (for when showing results)
-          if (document.getElementById("message-div")) {
-            highlightCorrectAnswers();
-          }
-          
-          
-        </script>
-      </body>
-    </html>
-  </body>
+        // Update subject category buttons to preserve selections
+        document.querySelectorAll('.subject-button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                const href = button.getAttribute('href');
+                saveSelectedOptions();
+                window.location.href = href;
+            });
+        });
+    </script>
+</body>
 </html>
-
